@@ -12,12 +12,16 @@ ARG PYTHON_VERSION="3.11"
 # Set up environment
 ENV PYTHON python${PYTHON_VERSION}
 ENV PIP ${PYTHON} -m pip
+ENV PYTHONUSERBASE /opt/env
 
-WORKDIR ${HOME}
+USER root
+RUN chown ${NB_USER}:${NB_USER} /opt
+
+WORKDIR /opt
 USER ${NB_USER}
 
-ENV PYTHONPATH="${PYTHONPATH}:${HOME}"
-ENV PATH="/home/${NB_USER}/.local/bin:${PATH}"
+ENV PYTHONPATH="${PYTHONPATH}:/opt"
+ENV PATH="/opt/env/bin:${PATH}"
 
 FROM base as python-deps
 COPY --chown=${NB_USER}:${NB_USER} requirements/base.txt requirements-base.txt
